@@ -17,7 +17,7 @@ interface IssuesPanelProps {
   unmatchedValues: Record<string, string[]>
   unknownFields: string[]
   textExcerpt?: string
-  onSaveAsAlias?: (value: string, targetField: string) => void
+  onSaveAsAlias?: (alias: any, saveLevel: 'global' | 'counterparty') => void
 }
 
 export function IssuesPanel({
@@ -41,58 +41,73 @@ export function IssuesPanel({
 
   const handleSaveAsAlias = () => {
     if (selectedValue && targetName && onSaveAsAlias) {
-      onSaveAsAlias(selectedValue.value, targetName)
+      onSaveAsAlias({ source_name: selectedValue.value, target_name: targetName }, 'global')
     }
     setSaveDialogOpen(false)
     setSelectedValue(null)
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {hasUnmatched && (
-        <div>
-          <div className="flex items-center gap-2 mb-2.5">
-            <AlertCircle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-500" />
-            <h4 className="text-xs font-semibold text-foreground uppercase tracking-wide">Unmatched Values</h4>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-orange" />
+            <h4 className="text-xs font-semibold text-foreground uppercase tracking-wide">Unmatched Values - Can be saved as aliases</h4>
           </div>
 
           {Object.entries(unmatchedValues).map(([field, values]) => (
-            <div key={field} className="mb-3">
-              <p className="text-xs text-muted-foreground capitalize mb-2">{field}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {values.map((value, i) => (
-                  <div
-                    key={`${field}-${i}`}
-                    className="flex items-center gap-1.5 px-2 py-1.5 rounded text-xs group hover:bg-muted/30 transition-colors"
-                  >
-                    <code className="text-amber-700 dark:text-amber-400 font-mono text-xs">{value}</code>
-                    <Button
-                      onClick={() => openSaveDialog(value, field)}
-                      variant="ghost"
-                      size="sm"
-                      className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="Save as alias"
-                    >
-                      <Plus className="w-3 h-3" />
-                    </Button>
+            <div key={field} className="space-y-2">
+              {values.map((value, i) => (
+                <div
+                  key={`${field}-${i}`}
+                  className={`flex items-center justify-between p-4 rounded border transition-all group ${
+                    'border-orange/20 bg-orange/5 hover:bg-orange/10'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2.5 flex-wrap mb-2">
+                        <code className="text-xs font-mono text-muted-foreground bg-muted/40 px-2 py-1 rounded truncate">
+                          {value}
+                        </code>
+                        <span className="text-xs text-muted-foreground">in</span>
+                        <span className="text-xs font-semibold text-foreground bg-orange/10 px-2 py-1 rounded">
+                          {field}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Found in document but not in booking data - create an alias to map it to a canonical value
+                      </p>
+                    </div>
                   </div>
-                ))}
-              </div>
+
+                  <Button
+                    onClick={() => openSaveDialog(value, field)}
+                    variant="outline"
+                    size="sm"
+                    className="flex-shrink-0 ml-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Plus className="w-3 h-3 mr-1" />
+                    Save
+                  </Button>
+                </div>
+              ))}
             </div>
           ))}
         </div>
       )}
 
       {hasUnknown && (
-        <div>
-          <div className="flex items-center gap-2 mb-2.5">
-            <AlertCircle className="w-3.5 h-3.5 text-blue-600 dark:text-blue-500" />
+        <div className="rounded border border-primary/20 bg-primary/5 p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertCircle className="w-4 h-4 text-primary" />
             <h4 className="text-xs font-semibold text-foreground uppercase tracking-wide">Unknown Fields</h4>
           </div>
 
           <div className="flex flex-wrap gap-2">
             {unknownFields.map((field, i) => (
-              <Badge key={`unknown-${i}`} variant="outline" className="text-xs font-normal">
+              <Badge key={`unknown-${i}`} variant="info" className="text-xs font-medium">
                 {field}
               </Badge>
             ))}
@@ -101,10 +116,10 @@ export function IssuesPanel({
       )}
 
       {textExcerpt && (
-        <div>
-          <h4 className="text-xs font-semibold text-foreground uppercase tracking-wide mb-2.5">Sample Content</h4>
-          <div className="bg-muted/30 rounded-md p-3 max-h-40 overflow-y-auto border border-border/50">
-            <code className="text-xs text-muted-foreground whitespace-pre-wrap font-mono">
+        <div className="space-y-3">
+          <h4 className="text-xs font-semibold text-foreground uppercase tracking-wide">Sample Content</h4>
+          <div className="bg-muted/40 rounded p-4 max-h-48 overflow-y-auto border border-border/50 font-mono text-xs text-muted-foreground leading-relaxed">
+            <code className="whitespace-pre-wrap">
               {textExcerpt}
             </code>
           </div>

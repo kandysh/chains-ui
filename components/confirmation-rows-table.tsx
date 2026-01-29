@@ -14,64 +14,40 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { AlertCircle } from 'lucide-react'
-
-interface ConfirmationRow {
-  strike_date?: string | Date
-  trade_date?: string | Date
-  direction?: 'long' | 'short'
-  swap_type?: string
-  index?: string
-  party_a?: string
-  swap_ccy?: string
-  counterparty?: string
-  units?: number
-  expiry_date?: string | Date
-  early_termination_party_a?: boolean
-  benchmark?: string
-  spread?: number
-  lookback?: string
-  bf?: number
-}
-
-interface TransformedField {
-  fieldName: string
-  alias: string
-}
+import { ConfirmationRow } from '@/lib/types'
 
 interface ConfirmationRowsTableProps {
   rows: ConfirmationRow[]
-  transformedFields?: Map<string, TransformedField>
+  transformedValues?: Map<string, Map<string, { sourceValue: string, targetValue: string, alias: string }>>
 }
 
 export function ConfirmationRowsTable({
   rows,
-  transformedFields = new Map(),
+  transformedValues = new Map(),
 }: ConfirmationRowsTableProps) {
-  const isFieldTransformed = (fieldName: string): TransformedField | undefined => {
-    return transformedFields.get(fieldName)
-  }
-
   const renderFieldValue = (fieldName: string, value: any) => {
-    const transformed = isFieldTransformed(fieldName)
-
-    if (!transformed) {
-      return <span className="text-sm">{String(value)}</span>
+    if (value === null || value === undefined) {
+      return <span className="text-sm text-muted-foreground">—</span>
     }
 
+    const fieldAliases = transformedValues?.get(fieldName)
+    const aliasInfo = fieldAliases?.get(String(value))
+
+    if (!aliasInfo) {
+      return <span className="text-sm text-foreground">{String(value)}</span>
+    }
+
+    // Value was aliased - show source with indicator
     return (
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center gap-1 cursor-help">
-              <span className="text-sm underline decoration-amber-500 decoration-2 underline-offset-2">
-                {String(value)}
-              </span>
-              <AlertCircle className="w-3 h-3 text-amber-600 dark:text-amber-500 flex-shrink-0" />
-            </div>
+            <span className="text-sm font-medium px-2.5 py-1 rounded bg-orange/15 text-orange underline decoration-orange decoration-2 underline-offset-2 cursor-pointer">
+              {aliasInfo.sourceValue}
+            </span>
           </TooltipTrigger>
-          <TooltipContent className="text-xs">
-            Applied alias: <code className="font-mono">{transformed.alias}</code>
+          <TooltipContent className="text-xs bg-background border border-border text-foreground">
+            <span>Aliased to: <code className="font-mono">{aliasInfo.targetValue}</code></span>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -80,7 +56,7 @@ export function ConfirmationRowsTable({
 
   if (rows.length === 0) {
     return (
-      <div className="text-center py-8 px-4 rounded-lg border border-dashed bg-muted/30">
+      <div className="text-center py-8 px-4 rounded border border-dashed bg-muted/30">
         <p className="text-sm text-muted-foreground">No confirmation rows to display</p>
       </div>
     )

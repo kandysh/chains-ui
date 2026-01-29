@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,50 +10,46 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
-import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react'
-
-interface Alias {
-  source_name: string
-  target_name: string
-  used: boolean
-  count: number
-  source: 'provided' | 'infered'
-  on_field: string[]
-}
+} from "@/components/ui/dialog";
+import { ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { Alias } from "@/lib/types";
 
 interface AliasesPanelProps {
-  aliases: Alias[]
-  onSaveAlias?: (alias: Alias, saveLevel: 'global' | 'counterparty') => void
+  aliases: Alias[];
+  onDeleteAlias?: (alias: Alias, saveLevel: "global" | "counterparty") => void;
 }
 
-export function AliasesPanel({ aliases, onSaveAlias }: AliasesPanelProps) {
-  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
-  const [selectedAlias, setSelectedAlias] = useState<Alias | null>(null)
-  const [saveLevel, setSaveLevel] = useState<'global' | 'counterparty'>('global')
+export function AliasesPanel({ aliases, onDeleteAlias }: AliasesPanelProps) {
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [selectedAlias, setSelectedAlias] = useState<Alias | null>(null);
+  const [saveLevel, setSaveLevel] = useState<"global" | "counterparty">(
+    "global",
+  );
 
   const openSaveDialog = (alias: Alias) => {
-    setSelectedAlias(alias)
-    setSaveLevel('global')
-    setSaveDialogOpen(true)
-  }
+    setSelectedAlias(alias);
+    setSaveLevel("global");
+    setSaveDialogOpen(true);
+  };
 
   const handleSave = () => {
-    if (selectedAlias && onSaveAlias) {
-      onSaveAlias(selectedAlias, saveLevel)
+    if (selectedAlias && onDeleteAlias) {
+      onDeleteAlias(selectedAlias, saveLevel);
     }
-    setSaveDialogOpen(false)
-    setSelectedAlias(null)
-  }
+    setSaveDialogOpen(false);
+    setSelectedAlias(null);
+  };
 
-  const usedAliases = aliases.filter((a) => a.used)
+  const usedAliases = aliases.filter((a) => a.used);
 
   if (usedAliases.length === 0) {
     return (
-      <div className="text-center py-8 px-4 rounded-lg border border-dashed bg-muted/30">
-        <p className="text-sm text-muted-foreground">No field aliases used in this processing</p>
+      <div className="text-center py-8 px-4 rounded border border-dashed bg-muted/30">
+        <p className="text-sm text-muted-foreground">
+          No value aliases used in this processing
+        </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -62,37 +58,42 @@ export function AliasesPanel({ aliases, onSaveAlias }: AliasesPanelProps) {
         {usedAliases.map((alias, index) => (
           <div
             key={`alias-${index}`}
-            className="flex items-center justify-between p-3 rounded-md hover:bg-muted/30 transition-colors group"
+            className={`flex items-center justify-between p-4 rounded border transition-all group ${
+              alias.source === "provided"
+                ? "border-green/20 bg-green/5 hover:bg-green/10"
+                : "border-orange/20 bg-orange/5 hover:bg-orange/10"
+            }`}
           >
-            <div className="flex items-center gap-2.5 flex-1 min-w-0">
-              {alias.source === 'provided' ? (
-                <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-500 flex-shrink-0" />
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              {alias.source === "provided" ? (
+                <CheckCircle2 className="w-5 h-5 text-green flex-shrink-0" />
               ) : (
-                <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-500 flex-shrink-0" />
+                <AlertCircle className="w-5 h-5 text-orange flex-shrink-0" />
               )}
-              
+
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap mb-1">
-                  <code className="text-xs font-mono text-muted-foreground truncate">
+                <div className="flex items-center gap-2.5 flex-wrap mb-2">
+                  <code className="text-xs font-mono text-muted-foreground bg-muted/40 px-2 py-1 rounded truncate">
                     {alias.source_name}
                   </code>
-                  <ArrowRight className="w-3 h-3 text-muted-foreground/60 flex-shrink-0" />
-                  <code className="text-xs font-mono text-foreground font-medium truncate">
+                  <ArrowRight className="w-4 h-4 text-muted-foreground/50 flex-shrink-0" />
+                  <code className="text-xs font-mono text-foreground font-semibold bg-primary/10 px-2 py-1 rounded truncate">
                     {alias.target_name}
                   </code>
                 </div>
-                
+
                 <p className="text-xs text-muted-foreground">
-                  {alias.count}x on {alias.on_field.join(', ')}
+                  Applied <span className="font-semibold">{alias.count}x</span>{" "}
+                  on {alias.on_field.join(", ")}
                 </p>
               </div>
             </div>
 
             <Button
               onClick={() => openSaveDialog(alias)}
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="flex-shrink-0 ml-2 opacity-0 group-hover:opacity-100 transition-opacity h-7 text-xs"
+              className="flex-shrink-0 ml-3 opacity-0 group-hover:opacity-100 transition-opacity"
             >
               Save
             </Button>
@@ -103,18 +104,26 @@ export function AliasesPanel({ aliases, onSaveAlias }: AliasesPanelProps) {
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save Field Alias</DialogTitle>
-            <DialogDescription>Choose the scope for saving this alias transformation</DialogDescription>
+            <DialogTitle>Save Value Alias</DialogTitle>
+            <DialogDescription>
+              Choose the scope for saving this value transformation
+            </DialogDescription>
           </DialogHeader>
 
           {selectedAlias && (
             <div className="space-y-4">
               <div className="bg-muted p-3 rounded-md">
-                <p className="text-xs text-muted-foreground mb-1">Transformation</p>
+                <p className="text-xs text-muted-foreground mb-1">
+                  Transformation
+                </p>
                 <div className="flex items-center gap-2">
-                  <code className="text-xs font-mono flex-1 truncate">{selectedAlias.source_name}</code>
+                  <code className="text-xs font-mono flex-1 truncate">
+                    {selectedAlias.source_name}
+                  </code>
                   <ArrowRight className="w-3 h-3 flex-shrink-0" />
-                  <code className="text-xs font-mono flex-1 truncate">{selectedAlias.target_name}</code>
+                  <code className="text-xs font-mono flex-1 truncate">
+                    {selectedAlias.target_name}
+                  </code>
                 </div>
               </div>
 
@@ -124,8 +133,10 @@ export function AliasesPanel({ aliases, onSaveAlias }: AliasesPanelProps) {
                     type="radio"
                     name="saveLevel"
                     value="global"
-                    checked={saveLevel === 'global'}
-                    onChange={(e) => setSaveLevel(e.target.value as 'global' | 'counterparty')}
+                    checked={saveLevel === "global"}
+                    onChange={(e) =>
+                      setSaveLevel(e.target.value as "global" | "counterparty")
+                    }
                     className="w-4 h-4"
                   />
                   <div>
@@ -141,12 +152,16 @@ export function AliasesPanel({ aliases, onSaveAlias }: AliasesPanelProps) {
                     type="radio"
                     name="saveLevel"
                     value="counterparty"
-                    checked={saveLevel === 'counterparty'}
-                    onChange={(e) => setSaveLevel(e.target.value as 'global' | 'counterparty')}
+                    checked={saveLevel === "counterparty"}
+                    onChange={(e) =>
+                      setSaveLevel(e.target.value as "global" | "counterparty")
+                    }
                     className="w-4 h-4"
                   />
                   <div>
-                    <p className="text-sm font-medium">Save at Counterparty Level</p>
+                    <p className="text-sm font-medium">
+                      Save at Counterparty Level
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       Only for this specific counterparty
                     </p>
@@ -165,5 +180,5 @@ export function AliasesPanel({ aliases, onSaveAlias }: AliasesPanelProps) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

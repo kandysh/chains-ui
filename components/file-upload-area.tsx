@@ -89,10 +89,10 @@ export function FileUploadArea({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       className={cn(
-        'relative rounded-md border transition-all duration-200 p-6 cursor-pointer',
+        'relative rounded border-2 transition-all duration-200 p-8 cursor-pointer',
         isDragging
-          ? 'border-primary/50 bg-primary/5'
-          : 'border-border bg-card hover:border-border/80'
+          ? 'border-primary bg-primary/8 shadow-md'
+          : 'border-border/50 bg-card/50 hover:border-primary/40 hover:bg-primary/5 hover:shadow-sm'
       )}
     >
       <input
@@ -104,36 +104,41 @@ export function FileUploadArea({
         className="hidden"
       />
 
-      <div className="flex flex-col items-center justify-center space-y-3" onClick={() => inputRef.current?.click()}>
-        <Upload className={cn(
-          'w-5 h-5 transition-colors',
-          isDragging ? 'text-primary' : 'text-muted-foreground'
-        )} />
+      <div className="flex flex-col items-center justify-center space-y-4" onClick={() => inputRef.current?.click()}>
+        <div className={cn(
+          'w-12 h-12 rounded flex items-center justify-center transition-colors duration-200',
+          isDragging
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-primary/10 text-primary'
+        )}>
+          <Upload className="w-6 h-6" />
+        </div>
 
         <div className="text-center">
-          <p className="text-sm font-medium text-foreground">
+          <p className="text-sm font-semibold text-foreground">
             {label || (multiple ? 'Drop files here' : 'Drop file here')}
           </p>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-xs text-muted-foreground mt-1.5">
             {description || 'or click to select'}
           </p>
         </div>
       </div>
 
       {selectedFiles.length > 0 && (
-        <div className="mt-4 space-y-2 pt-4 border-t border-border">
-          <div className="space-y-1">
+        <div className="mt-6 space-y-3 pt-6 border-t border-border/40">
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Selected Files</div>
+          <div className="space-y-2">
             {selectedFiles.map((file, index) => (
-              <div key={`${file.name}-${index}`} className="flex items-center justify-between rounded p-2 hover:bg-muted/50 transition-colors group">
-                <span className="text-xs text-foreground truncate">{file.name}</span>
+              <div key={`${file.name}-${index}`} className="flex items-center justify-between rounded p-3 bg-muted/30 hover:bg-muted/60 transition-colors group">
+                <span className="text-sm text-foreground truncate font-medium">{file.name}</span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
                     removeFile(index)
                   }}
-                  className="p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="p-1 opacity-60 group-hover:opacity-100 transition-opacity hover:bg-white/20 rounded"
                 >
-                  <X className="w-3 h-3 text-muted-foreground hover:text-foreground" />
+                  <X className="w-4 h-4 text-muted-foreground hover:text-foreground" />
                 </button>
               </div>
             ))}

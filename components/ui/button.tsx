@@ -9,16 +9,19 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
         destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 shadow-sm",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/60 dark:bg-input/30 dark:border-primary/40 dark:hover:bg-primary/20",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-xs",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "text-foreground hover:bg-accent/50 hover:text-accent-foreground dark:hover:bg-accent/20",
+        link: "text-primary underline-offset-4 hover:underline dark:text-accent",
+        teal: "bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm",
+        purple: "bg-purple text-white hover:bg-purple/90 shadow-sm",
+        orange: "bg-orange text-white hover:bg-orange/90 shadow-sm",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
