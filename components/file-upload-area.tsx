@@ -5,7 +5,6 @@ import React from "react"
 import { useState, useRef } from 'react'
 import { Upload, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 
 interface FileUploadAreaProps {
   onFilesSelected: (files: File[]) => void
@@ -75,13 +74,6 @@ export function FileUploadArea({
     inputRef.current?.click()
   }
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files)
-      handleFiles(files)
-    }
-  }
-
   return (
     <div
       onDragEnter={handleDragEnter}
@@ -100,7 +92,7 @@ export function FileUploadArea({
         type="file"
         multiple={multiple}
         accept={accept}
-        onChange={handleFileSelect}
+        onChange={handleInputChange}
         className="hidden"
       />
 

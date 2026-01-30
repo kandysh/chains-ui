@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { FileUploadArea } from "@/components/file-upload-area";
 import { ResultsView } from "@/components/results-view";
 import { Loader2 } from "lucide-react";
@@ -142,7 +141,7 @@ export default function Home() {
           <div className="flex justify-center gap-3 pt-4">
             <Button
               onClick={handleProcessFiles}
-              // disabled={!canProcess || isLoading}
+              disabled={!canProcess || isLoading}
               size="lg"
               className="gap-2"
             >

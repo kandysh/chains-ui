@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
 import { ValidationStatusComponent } from "./validation-status";
 import { AliasesPanel } from "./aliases-panel";
 import { ConfirmationRowsTable } from "./confirmation-rows-table";

@@ -2,17 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    // const formData = await request.formData()
-    // const bookingFile = formData.get('booking_file') as File | null
-    // const confirmationFiles = formData.getAll('confirmation_files') as File[]
-
-    // if (!bookingFile && confirmationFiles.length === 0) {
-    //   return NextResponse.json(
-    //     { error: 'No files provided' },
-    //     { status: 400 }
-    //   )
-    // }
-
     // Mock processing logic - different file types to test UI states
     const mockResult = {
       booking_filename: 'booking_master.xlsx',
