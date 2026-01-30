@@ -13,9 +13,10 @@ import { ProcessResult } from "@/lib/types";
 interface ResultsViewProps {
   results: ProcessResult;
   onSaveAlias?: (alias: any, saveLevel: "global" | "counterparty") => void;
+  onDeleteAlias?: (alias: any, saveLevel: "global" | "counterparty") => void;
 }
 
-export function ResultsView({ results, onSaveAlias }: ResultsViewProps) {
+export function ResultsView({ results, onSaveAlias, onDeleteAlias }: ResultsViewProps) {
   const [expandedFiles, setExpandedFiles] = useState<Set<number>>(new Set([0]));
 
   const toggleFile = (index: number) => {
@@ -208,7 +209,11 @@ export function ResultsView({ results, onSaveAlias }: ResultsViewProps) {
                       unmatchedValues={fileResult.unmatched_values}
                       unknownFields={fileResult.unknown_fields}
                       textExcerpt={fileResult.text_excerpt}
+                      confirmationRows={fileResult.confirmation_rows}
+                      bookingMatchesRows={fileResult.booking_matches_rows}
+                      usedAliases={fileResult.aliases_used}
                       onSaveAsAlias={onSaveAlias}
+                      onDeleteAlias={onDeleteAlias}
                     />
                   </div>
                 )}

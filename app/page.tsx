@@ -72,6 +72,14 @@ export default function Home() {
     // Implement API call to save alias
   };
 
+  const handleDeleteAlias = async (
+    alias: any,
+    saveLevel: "global" | "counterparty",
+  ) => {
+    console.log("[v0] Deleting alias:", { alias, saveLevel });
+    // Implement API call to delete alias
+  };
+
   const canProcess = singleFile || multipleFiles.length > 0;
 
   return (
@@ -167,7 +175,7 @@ export default function Home() {
                 {results.files.length !== 1 ? "s" : ""} processed
               </div>
             </div>
-            <ResultsView results={results} onSaveAlias={handleSaveAlias} />
+            <ResultsView results={results} onSaveAlias={handleSaveAlias} onDeleteAlias={handleDeleteAlias} />
           </div>
         )}
       </div>
