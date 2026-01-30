@@ -191,7 +191,7 @@ export function ResultsView({ results, onSaveAlias, onDeleteAlias }: ResultsView
                     </h4>
                     <AliasesPanel
                       aliases={fileResult.aliases_used}
-                      onDeleteAlias={onSaveAlias}
+                      onDeleteAlias={onDeleteAlias}
                     />
                   </div>
                 )}
@@ -213,7 +213,6 @@ export function ResultsView({ results, onSaveAlias, onDeleteAlias }: ResultsView
                       bookingMatchesRows={fileResult.booking_matches_rows}
                       usedAliases={fileResult.aliases_used}
                       onSaveAsAlias={onSaveAlias}
-                      onDeleteAlias={onDeleteAlias}
                     />
                   </div>
                 )}

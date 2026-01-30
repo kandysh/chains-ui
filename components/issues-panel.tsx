@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { AlertCircle, Plus, Trash2, ArrowRight } from 'lucide-react'
+import { AlertCircle, Plus, ArrowRight } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -30,7 +30,6 @@ interface IssuesPanelProps {
   bookingMatchesRows?: BookingMatch[]
   usedAliases?: Alias[]
   onSaveAsAlias?: (alias: any, saveLevel: 'global' | 'counterparty') => void
-  onDeleteAlias?: (alias: Alias, saveLevel: 'global' | 'counterparty') => void
 }
 
 export function IssuesPanel({
@@ -41,13 +40,11 @@ export function IssuesPanel({
   bookingMatchesRows = [],
   usedAliases = [],
   onSaveAsAlias,
-  onDeleteAlias,
 }: IssuesPanelProps) {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [selectedValue, setSelectedValue] = useState<UnmatchedValueMatch | null>(null)
   const [targetName, setTargetName] = useState('')
   const [saveLevel, setSaveLevel] = useState<'global' | 'counterparty'>('global')
-  const [isCreatingNewAlias, setIsCreatingNewAlias] = useState(true)
 
   const hasUnmatched = Object.keys(unmatchedValues).length > 0
   const hasUnknown = unknownFields.length > 0
@@ -87,8 +84,7 @@ export function IssuesPanel({
 
   const openSaveDialog = (match: UnmatchedValueMatch) => {
     setSelectedValue(match)
-    setTargetName(match.existingAlias?.target_name || '')
-    setIsCreatingNewAlias(!match.existingAlias)
+    setTargetName(match.bookingValue || '')
     setSaveLevel('global')
     setSaveDialogOpen(true)
   }
@@ -106,16 +102,6 @@ export function IssuesPanel({
     }
     setSaveDialogOpen(false)
     setSelectedValue(null)
-    setIsCreatingNewAlias(true)
-  }
-
-  const handleDeleteAlias = () => {
-    if (selectedValue?.existingAlias && onDeleteAlias) {
-      onDeleteAlias(selectedValue.existingAlias, saveLevel)
-    }
-    setSaveDialogOpen(false)
-    setSelectedValue(null)
-    setIsCreatingNewAlias(true)
   }
 
   return (
@@ -181,17 +167,8 @@ export function IssuesPanel({
                 size="sm"
                 className="flex-shrink-0 ml-3 opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                {match.existingAlias ? (
-                  <>
-                    <Trash2 className="w-3 h-3 mr-1" />
-                    Remove
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-3 h-3 mr-1" />
-                    Save
-                  </>
-                )}
+                <Plus className="w-3 h-3 mr-1" />
+                Save
               </Button>
             </div>
           ))}
@@ -258,62 +235,60 @@ export function IssuesPanel({
                 )}
               </div>
 
-              {isCreatingNewAlias ? (
-                <div>
-                  <label htmlFor="targetName" className="text-sm font-medium block mb-2">
-                    {selectedValue.hasMatch ? 'Map to Booking Value' : 'Map to Canonical Value'}
-                  </label>
-                  <input
-                    id="targetName"
-                    type="text"
-                    value={targetName}
-                    onChange={(e) => setTargetName(e.target.value)}
-                    placeholder={selectedValue.hasMatch ? 'e.g., booking value' : 'e.g., canonical value'}
-                    className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {selectedValue.hasMatch
-                      ? 'This mapping will be saved for this field'
-                      : 'This value will be recognized in future processing'}
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-muted transition-colors">
-                    <input
-                      type="radio"
-                      name="saveLevel"
-                      value="global"
-                      checked={saveLevel === 'global'}
-                      onChange={(e) => setSaveLevel(e.target.value as 'global' | 'counterparty')}
-                      className="w-4 h-4"
-                    />
-                    <div>
-                      <p className="text-sm font-medium">Save Globally</p>
-                      <p className="text-xs text-muted-foreground">
-                        Available for all counterparties and future processing
-                      </p>
-                    </div>
-                  </label>
+              <div>
+                <label htmlFor="targetName" className="text-sm font-medium block mb-2">
+                  {selectedValue.hasMatch ? 'Map to Booking Value' : 'Map to Canonical Value'}
+                </label>
+                <input
+                  id="targetName"
+                  type="text"
+                  value={targetName}
+                  onChange={(e) => setTargetName(e.target.value)}
+                  placeholder={selectedValue.hasMatch ? 'e.g., booking value' : 'e.g., canonical value'}
+                  className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {selectedValue.hasMatch
+                    ? 'This mapping will be saved for this field'
+                    : 'This value will be recognized in future processing'}
+                </p>
+              </div>
 
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-muted transition-colors">
-                    <input
-                      type="radio"
-                      name="saveLevel"
-                      value="counterparty"
-                      checked={saveLevel === 'counterparty'}
-                      onChange={(e) => setSaveLevel(e.target.value as 'global' | 'counterparty')}
-                      className="w-4 h-4"
-                    />
-                    <div>
-                      <p className="text-sm font-medium">Save at Counterparty Level</p>
-                      <p className="text-xs text-muted-foreground">
-                        Only for this specific counterparty
-                      </p>
-                    </div>
-                  </label>
-                </div>
-              )}
+              <div className="space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-muted transition-colors">
+                  <input
+                    type="radio"
+                    name="saveLevel"
+                    value="global"
+                    checked={saveLevel === 'global'}
+                    onChange={(e) => setSaveLevel(e.target.value as 'global' | 'counterparty')}
+                    className="w-4 h-4"
+                  />
+                  <div>
+                    <p className="text-sm font-medium">Save Globally</p>
+                    <p className="text-xs text-muted-foreground">
+                      Available for all counterparties and future processing
+                    </p>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-muted transition-colors">
+                  <input
+                    type="radio"
+                    name="saveLevel"
+                    value="counterparty"
+                    checked={saveLevel === 'counterparty'}
+                    onChange={(e) => setSaveLevel(e.target.value as 'global' | 'counterparty')}
+                    className="w-4 h-4"
+                  />
+                  <div>
+                    <p className="text-sm font-medium">Save at Counterparty Level</p>
+                    <p className="text-xs text-muted-foreground">
+                      Only for this specific counterparty
+                    </p>
+                  </div>
+                </label>
+              </div>
             </div>
           )}
 
@@ -321,20 +296,9 @@ export function IssuesPanel({
             <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
               Cancel
             </Button>
-            {selectedValue?.existingAlias && !isCreatingNewAlias ? (
-              <Button
-                variant="destructive"
-                onClick={handleDeleteAlias}
-                className="gap-2"
-              >
-                <Trash2 className="w-4 h-4" />
-                Remove Alias
-              </Button>
-            ) : (
-              <Button onClick={handleSaveAsAlias} disabled={!targetName}>
-                {selectedValue?.hasMatch ? 'Save Mapping' : 'Create Alias'}
-              </Button>
-            )}
+            <Button onClick={handleSaveAsAlias} disabled={!targetName}>
+              {selectedValue?.hasMatch ? 'Save Mapping' : 'Create Alias'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

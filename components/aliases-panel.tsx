@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertCircle, Trash2 } from "lucide-react";
 import { Alias } from "@/lib/types";
 
 interface AliasesPanelProps {
@@ -32,7 +32,7 @@ export function AliasesPanel({ aliases, onDeleteAlias }: AliasesPanelProps) {
     setSaveDialogOpen(true);
   };
 
-  const handleSave = () => {
+  const handleRemove = () => {
     if (selectedAlias && onDeleteAlias) {
       onDeleteAlias(selectedAlias, saveLevel);
     }
@@ -95,7 +95,8 @@ export function AliasesPanel({ aliases, onDeleteAlias }: AliasesPanelProps) {
               size="sm"
               className="flex-shrink-0 ml-3 opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              Save
+              <Trash2 className="w-3 h-3 mr-1" />
+              Remove
             </Button>
           </div>
         ))}
@@ -104,9 +105,9 @@ export function AliasesPanel({ aliases, onDeleteAlias }: AliasesPanelProps) {
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save Value Alias</DialogTitle>
+            <DialogTitle>Remove Value Alias</DialogTitle>
             <DialogDescription>
-              Choose the scope for saving this value transformation
+              Choose the scope for removing this value alias
             </DialogDescription>
           </DialogHeader>
 
@@ -175,7 +176,10 @@ export function AliasesPanel({ aliases, onDeleteAlias }: AliasesPanelProps) {
             <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>Save Alias</Button>
+            <Button onClick={handleRemove} variant="destructive">
+              <Trash2 className="w-4 h-4 mr-2" />
+              Remove Alias
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
