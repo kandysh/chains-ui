@@ -1,7 +1,7 @@
 """Results display components."""
 import streamlit as st
 from typing import List
-from components.allocation_table import render_allocation_table
+from components.table_with_actions import render_table_with_actions
 
 
 def calculate_file_status(file_result) -> str:
@@ -76,7 +76,7 @@ def render_file_card(file_result, file_idx: int):
         expanded=(file_idx == 0)  # Expand first file by default
     ):
         # File metadata
-        st.markdown("### 📋 File Information")
+        st.markdown("**📋 File Information**")
 
         col1, col2 = st.columns(2)
         with col1:
@@ -90,11 +90,9 @@ def render_file_card(file_result, file_idx: int):
             with st.expander("📄 Text Excerpt", expanded=False):
                 st.text(file_result.text_excerpt[:500] + "..." if len(file_result.text_excerpt) > 500 else file_result.text_excerpt)
 
-        st.markdown("---")
-
         # Render each allocation
         if file_result.normalized:
-            st.markdown("### 📊 Allocations")
+            st.markdown("**📊 Allocations**")
 
             for allocation_idx, normalized_fields in enumerate(file_result.normalized):
                 # Get corresponding validation and aliases
@@ -102,10 +100,10 @@ def render_file_card(file_result, file_idx: int):
                 aliases = file_result.aliases_used[allocation_idx]
 
                 # Allocation header
-                st.markdown(f"#### Allocation #{allocation_idx + 1}")
+                st.markdown(f"**Allocation #{allocation_idx + 1}**")
 
-                # Render the allocation table
-                render_allocation_table(
+                # Render the allocation table with inline actions
+                render_table_with_actions(
                     file_idx=file_idx,
                     allocation_idx=allocation_idx,
                     normalized_fields=normalized_fields,
@@ -113,9 +111,9 @@ def render_file_card(file_result, file_idx: int):
                     aliases=aliases
                 )
 
-                # Add separator between allocations
+                # Add minimal separator between allocations
                 if allocation_idx < len(file_result.normalized) - 1:
-                    st.markdown("---")
+                    st.markdown("<div style='margin: 1rem 0;'></div>", unsafe_allow_html=True)
         else:
             st.warning("⚠️ No allocations found in this file.")
 
@@ -131,7 +129,7 @@ def render_results_view(results: List):
         st.info("No results to display.")
         return
 
-    st.markdown(f"### 📊 Processing Results ({len(results)} files)")
+    st.markdown(f"**📊 Processing Results ({len(results)} files)**")
 
     # Summary metrics
     total_allocations = sum(len(r.normalized) for r in results)
@@ -141,8 +139,6 @@ def render_results_view(results: List):
         st.metric("Total Files", len(results))
     with col2:
         st.metric("Total Allocations", total_allocations)
-
-    st.markdown("---")
 
     # Render each file card
     for file_idx, file_result in enumerate(results):

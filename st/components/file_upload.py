@@ -11,7 +11,7 @@ def render_booking_file_uploader() -> Optional[any]:
     Returns:
         UploadedFile or None if no file uploaded
     """
-    st.subheader("📊 Booking File (Excel)")
+    st.markdown("**📊 Booking File (Excel)**")
     uploaded_file = st.file_uploader(
         "Upload booking Excel file",
         type=ALLOWED_BOOKING_EXTENSIONS,
@@ -35,7 +35,7 @@ def render_confirmation_files_uploader() -> List[any]:
     Returns:
         List of UploadedFile objects (empty list if none uploaded)
     """
-    st.subheader("📄 Confirmation Files (PDFs)")
+    st.markdown("**📄 Confirmation Files (PDFs)**")
     uploaded_files = st.file_uploader(
         "Upload confirmation PDF files",
         type=ALLOWED_CONFIRMATION_EXTENSIONS,

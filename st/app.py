@@ -15,6 +15,7 @@ from components.file_upload import (
     render_confirmation_files_uploader
 )
 from components.results_display import render_results_view
+from utils.styles import inject_custom_css
 
 # Page configuration
 st.set_page_config(
@@ -26,14 +27,15 @@ st.set_page_config(
 # Initialize session state
 initialize_session_state()
 
+# Inject custom CSS
+inject_custom_css()
+
 # Header
-st.title(f"{PAGE_ICON} {PAGE_TITLE}")
+st.markdown(f"# {PAGE_ICON} {PAGE_TITLE}")
 st.markdown("Upload booking file and confirmation PDFs to validate and match trades")
 
-st.markdown("---")
-
 # Upload Section
-st.header("1️⃣ Upload Files")
+st.markdown("## 1️⃣ Upload Files")
 
 col1, col2 = st.columns(2)
 
@@ -47,15 +49,14 @@ with col2:
     if confirmation_files:
         set_confirmation_files(confirmation_files)
 
-st.markdown("---")
-
 # Process Button Section
-st.header("2️⃣ Process Files")
+st.markdown("## 2️⃣ Process Files")
 
 process_button_disabled = not can_process()
 
 if process_button_disabled:
-    st.info("ℹ️ Please upload both a booking file and at least one confirmation file to proceed.")
+    with st.expander("ℹ️ Upload Instructions", expanded=False):
+        st.markdown("Please upload both a booking file and at least one confirmation file to proceed.")
 
 if st.button(
     "🚀 Process Files",
@@ -86,31 +87,28 @@ if st.button(
             st.error(f"❌ **Error**: {str(e)}")
             set_error(str(e))
 
-st.markdown("---")
-
 # Results Section
 if st.session_state.process_results:
-    st.header("3️⃣ Results")
+    st.markdown("## 3️⃣ Results")
     render_results_view(st.session_state.process_results)
 
-    # Add a divider and helpful info
-    st.markdown("---")
-    st.info("""
-    **📖 How to read the results:**
-    - 🟢 **Green rows**: Values match and validation passed
-    - 🟡 **Yellow rows**: Alias transformation was applied
-    - 🔴 **Red rows**: Values don't match or validation failed
+    # Add helpful info in collapsible section
+    with st.expander("📖 How to read the results", expanded=False):
+        st.markdown("""
+        **Color coding:**
+        - 🟢 **Green rows**: Values match and validation passed
+        - 🟡 **Yellow rows**: Alias transformation was applied
+        - 🔴 **Red rows**: Values don't match or validation failed
 
-    **🔧 Actions:**
-    - Click **Add Alias** on red rows to create a mapping
-    - Click **Drop Alias** on yellow rows to remove a mapping
-    - After making changes, click **Process Files** again to see updated results
-    """)
+        **Actions:**
+        - Click **➕ Add** on red rows to create a mapping
+        - Click **➖ Drop** on yellow rows to remove a mapping
+        - After making changes, click **Process Files** again to see updated results
+        """)
 
 # Footer
-st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: gray;'>"
+    "<div style='text-align: center; color: gray; margin-top: 2rem;'>"
     "Swap Confirmation Processing UI | Built with Streamlit"
     "</div>",
     unsafe_allow_html=True
