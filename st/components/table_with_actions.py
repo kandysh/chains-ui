@@ -2,9 +2,21 @@
 import streamlit as st
 import pandas as pd
 from typing import List
+from datetime import date, datetime
 from utils.color_logic import determine_row_color, get_color_styles, is_field_aliased
 from utils.formatters import format_value, format_field_name
 from components.alias_actions import show_add_alias_dialog, show_drop_alias_dialog
+
+
+def safe_convert_for_dataframe(value):
+    """Convert value to a type safe for PyArrow/DataFrame storage."""
+    if value is None:
+        return None
+    if isinstance(value, (date, datetime)):
+        return str(value)
+    if isinstance(value, bool):
+        return str(value)
+    return value
 
 
 def render_table_with_actions(
@@ -64,8 +76,8 @@ def render_table_with_actions(
             "Comment": comment,
             "_color": color,
             "_field_name": field_name,  # Keep original for API calls
-            "_term_value": term_value,
-            "_booking_value": booking_value,
+            "_term_value": safe_convert_for_dataframe(term_value),
+            "_booking_value": safe_convert_for_dataframe(booking_value),
             "_aliased": aliased
         })
 
