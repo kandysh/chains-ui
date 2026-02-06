@@ -1,0 +1,136 @@
+/* Custom CSS for UI Enhancement */
+
+/* Reduce page padding */
+.main .block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Compact header margins */
+.main h1 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.main h2 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.main h3 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.main h4 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Reduce divider spacing by 70% */
+.main hr {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Tighten expander padding */
+.streamlit-expanderHeader {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.streamlit-expanderContent {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/* Reduce column gaps */
+[data-testid="column"] {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+/* Professional table styling */
+.dataframe {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.dataframe thead tr th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 0.5rem;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.dataframe tbody tr td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.dataframe tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Consistent button styling */
+.stButton > button {
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid #dee2e6;
+}
+
+.stButton > button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Compact action buttons for inline display */
+.action-button {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+    min-height: 32px;
+}
+
+/* Card styling with subtle shadows */
+.element-container {
+    transition: box-shadow 0.2s ease;
+}
+
+/* Reduce metric spacing */
+[data-testid="metric-container"] {
+    padding: 0.5rem;
+}
+
+/* Compact info boxes */
+.stAlert {
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Reduce spacing in columns */
+[data-testid="stHorizontalBlock"] {
+    gap: 0.5rem;
+}
+
+/* Tighter spacing for markdown elements */
+.main p {
+    margin-bottom: 0.5rem;
+}
+
+/* Compact file uploader */
+[data-testid="stFileUploader"] {
+    padding: 0.5rem;
+}
+
+/* Reduce spacing around buttons */
+.stButton {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Make spinner more compact */
+.stSpinner > div {
+    padding: 0.5rem;
+}
